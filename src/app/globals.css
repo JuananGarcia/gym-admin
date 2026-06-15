@@ -4,6 +4,11 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ============================================================
+   GYMFLOW — Design System "High-Performance Kineticism"
+   Stitch tokens mapped to Shadcn CSS variables
+   ============================================================ */
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -39,92 +44,173 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  /* Corner radius — always md minimum (No sharp corners rule) */
+  --radius-sm: 0.75rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+  --radius-xl: 2rem;
+  --radius-2xl: 2.5rem;
+  --radius-3xl: 3rem;
+  --radius-4xl: 3rem;
 }
 
+/* ============================================================
+   GymFlow Dark Mode (always dark — no light mode)
+   ============================================================ */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  color-scheme: dark;
+
+  /* Surfaces — Deep Obsidian */
+  --background:        #0e0e0e;
+  --foreground:        #ffffff;
+
+  /* Cards / Containers */
+  --card:              #201f1f;
+  --card-foreground:   #ffffff;
+  --popover:           #131313;
+  --popover-foreground: #ffffff;
+
+  /* Primary — Neon Kinetic Green */
+  --primary:           #cafd00;
+  --primary-foreground: #516700;
+
+  /* Secondary — Muted Sulfur */
+  --secondary:         #262626;
+  --secondary-foreground: #ffffff;
+
+  /* Muted */
+  --muted:             #1a1919;
+  --muted-foreground:  #adaaaa;
+
+  /* Accent */
+  --accent:            #201f1f;
+  --accent-foreground: #f3ffca;
+
+  /* Destructive */
+  --destructive:       #ff7351;
+
+  /* Borders — "No-Line Rule": near-invisible */
+  --border:            rgba(255,255,255,0.06);
+  --input:             #201f1f;
+  --ring:              #cafd0040;
+
+  /* Charts — Neon palette */
+  --chart-1:           #cafd00;
+  --chart-2:           #ece856;
+  --chart-3:           #f3ffca;
+  --chart-4:           #adaaaa;
+  --chart-5:           #494847;
+
+  /* Radius base */
+  --radius: 1rem;
+
+  /* Sidebar — surface-container-low */
+  --sidebar:                    #131313;
+  --sidebar-foreground:         #ffffff;
+  --sidebar-primary:            #cafd00;
+  --sidebar-primary-foreground: #516700;
+  --sidebar-accent:             #201f1f;
+  --sidebar-accent-foreground:  #f3ffca;
+  --sidebar-border:             rgba(255,255,255,0.05);
+  --sidebar-ring:               #cafd0040;
 }
 
+/* Force dark — no .dark class needed */
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  color-scheme: dark;
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
   html {
     @apply font-sans;
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    background-color: #0e0e0e;
   }
 }
+
+/* ============================================================
+   GymFlow Utility Classes
+   ============================================================ */
+
+/* Surface nesting levels */
+.surface-lowest  { background-color: #000000; }
+.surface-low     { background-color: #131313; }
+.surface         { background-color: #1a1919; }
+.surface-high    { background-color: #201f1f; }
+.surface-highest { background-color: #262626; }
+
+/* Glassmorphism overlay */
+.glass {
+  background: rgba(14, 14, 14, 0.6);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-top: 1px solid rgba(202, 253, 0, 0.2);
+}
+
+/* Neon glow on primary elements */
+.glow-primary {
+  box-shadow: 0 0 20px rgba(202, 253, 0, 0.1);
+}
+.glow-primary-hover:hover {
+  box-shadow: 0 0 28px rgba(202, 253, 0, 0.18);
+  transition: box-shadow 0.2s ease;
+}
+
+/* Neon input focus */
+.input-neon:focus-within {
+  border-color: #cafd00;
+  box-shadow: 0 0 0 4px rgba(202, 253, 0, 0.15);
+}
+
+/* Typography — Display (PRs, Hero stats) */
+.text-display-lg {
+  font-size: 3.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.text-display-md {
+  font-size: 2.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+/* Label micro-data (BPM, KCAL style) */
+.text-label-micro {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #adaaaa;
+}
+
+/* CTA gradient button */
+.btn-cta {
+  background: linear-gradient(135deg, #f3ffca 0%, #cafd00 100%);
+  color: #516700;
+  border-radius: 3rem;
+  font-weight: 600;
+  transition: box-shadow 0.2s ease;
+}
+.btn-cta:hover {
+  box-shadow: 0 0 28px rgba(202, 253, 0, 0.25);
+}
+
+/* Bento grid spacing */
+.bento-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+/* Scrollbar — minimal dark */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #262626; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #494847; }
