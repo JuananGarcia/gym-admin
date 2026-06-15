@@ -706,9 +706,9 @@ function ExercisePreview({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative surface-highest rounded-2xl w-full max-w-lg border border-white/5 glass overflow-hidden">
+      <div className="relative surface-highest rounded-2xl w-full max-w-lg border border-white/5 glass overflow-y-auto max-h-[90vh]">
         {/* GIF */}
-        <div className="aspect-video bg-black/40 relative">
+        <div className="aspect-video bg-black/40 relative shrink-0">
           {ex.thumbnail_url ? (
             <img src={ex.thumbnail_url} alt={ex.name_es} className="w-full h-full object-contain" />
           ) : (
