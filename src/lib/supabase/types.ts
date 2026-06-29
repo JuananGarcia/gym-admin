@@ -2,7 +2,7 @@ export type UserRole = "trainer" | "client";
 export type PaymentStatus = "pending" | "completed" | "failed" | "refunded";
 export type PaymentMethod = "stripe" | "cash" | "transfer" | "other";
 export type RoutineStatus = "draft" | "active" | "archived";
-export type DifficultyLevel = "beginner" | "intermediate" | "advanced";
+export type DifficultyLevel = "beginner" | "beginner_intermediate" | "intermediate" | "intermediate_advanced" | "advanced";
 export type MuscleGroup =
   | "chest" | "back" | "shoulders" | "biceps" | "triceps"
   | "legs" | "glutes" | "core" | "cardio" | "full_body" | "other";
@@ -198,6 +198,8 @@ export interface Database {
           description_es: string | null;
           description_en: string | null;
           muscle_group: MuscleGroup;
+          secondary_muscles: MuscleGroup[];
+          stabilizer_muscles: MuscleGroup[];
           difficulty: DifficultyLevel;
           video_url: string | null;
           thumbnail_url: string | null;
@@ -213,6 +215,8 @@ export interface Database {
           description_es?: string | null;
           description_en?: string | null;
           muscle_group?: MuscleGroup;
+          secondary_muscles?: MuscleGroup[];
+          stabilizer_muscles?: MuscleGroup[];
           difficulty?: DifficultyLevel;
           video_url?: string | null;
           thumbnail_url?: string | null;
@@ -228,6 +232,8 @@ export interface Database {
           description_es?: string | null;
           description_en?: string | null;
           muscle_group?: MuscleGroup;
+          secondary_muscles?: MuscleGroup[];
+          stabilizer_muscles?: MuscleGroup[];
           difficulty?: DifficultyLevel;
           video_url?: string | null;
           thumbnail_url?: string | null;

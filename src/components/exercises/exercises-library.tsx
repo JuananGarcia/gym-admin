@@ -15,6 +15,8 @@ interface Exercise {
   description_es: string | null;
   description_en: string | null;
   muscle_group: MuscleGroup;
+  secondary_muscles: MuscleGroup[];
+  stabilizer_muscles: MuscleGroup[];
   difficulty: DifficultyLevel;
   thumbnail_url: string | null;
   is_global: boolean;
@@ -25,13 +27,18 @@ interface Exercise {
 type FormState = {
   name_es: string; name_en: string;
   description_es: string; description_en: string;
-  muscle_group: MuscleGroup; difficulty: DifficultyLevel;
+  muscle_group: MuscleGroup;
+  secondary_muscles: MuscleGroup[];
+  stabilizer_muscles: MuscleGroup[];
+  difficulty: DifficultyLevel;
 };
 
 const BLANK_FORM: FormState = {
   name_es: "", name_en: "",
   description_es: "", description_en: "",
   muscle_group: "other",
+  secondary_muscles: [],
+  stabilizer_muscles: [],
   difficulty: "intermediate",
 };
 
@@ -43,13 +50,19 @@ const MUSCLE_LABELS: Record<MuscleGroup, string> = {
 };
 
 const DIFFICULTY_STYLES: Record<DifficultyLevel, string> = {
-  beginner:     "bg-[#cafd00]/10 text-[#cafd00]",
-  intermediate: "bg-[#ece856]/10 text-[#ece856]",
-  advanced:     "bg-[#ff7351]/10 text-[#ff7351]",
+  beginner:              "bg-[#cafd00]/10 text-[#cafd00]",
+  beginner_intermediate: "bg-[#7ddba0]/10 text-[#7ddba0]",
+  intermediate:          "bg-[#ece856]/10 text-[#ece856]",
+  intermediate_advanced: "bg-[#f0a05a]/10 text-[#f0a05a]",
+  advanced:              "bg-[#ff7351]/10 text-[#ff7351]",
 };
 
 const DIFFICULTY_LABELS: Record<DifficultyLevel, string> = {
-  beginner: "Principiante", intermediate: "Intermedio", advanced: "Avanzado",
+  beginner:              "Principiante",
+  beginner_intermediate: "Princ.-Intermedio",
+  intermediate:          "Intermedio",
+  intermediate_advanced: "Inter.-Avanzado",
+  advanced:              "Avanzado",
 };
 
 const ALL_MUSCLES: MuscleGroup[] = [
@@ -130,11 +143,13 @@ export function ExercisesLibrary({
           description_es: form.description_es || null,
           description_en: form.description_en || null,
           muscle_group: form.muscle_group,
+          secondary_muscles: form.secondary_muscles,
+          stabilizer_muscles: form.stabilizer_muscles,
           difficulty: form.difficulty,
           thumbnail_url,
           is_global: true,
         })
-        .select("id, name_es, name_en, description_es, description_en, muscle_group, difficulty, thumbnail_url, is_global, created_by, created_at")
+        .select("id, name_es, name_en, description_es, description_en, muscle_group, secondary_muscles, stabilizer_muscles, difficulty, thumbnail_url, is_global, created_by, created_at")
         .single();
 
       if (error) throw new Error(error.message);
@@ -157,6 +172,8 @@ export function ExercisesLibrary({
       description_es: ex.description_es ?? "",
       description_en: ex.description_en ?? "",
       muscle_group: ex.muscle_group,
+      secondary_muscles: ex.secondary_muscles ?? [],
+      stabilizer_muscles: ex.stabilizer_muscles ?? [],
       difficulty: ex.difficulty,
     });
     setGifFile(null);
@@ -184,11 +201,13 @@ export function ExercisesLibrary({
           description_es: form.description_es || null,
           description_en: form.description_en || null,
           muscle_group: form.muscle_group,
+          secondary_muscles: form.secondary_muscles,
+          stabilizer_muscles: form.stabilizer_muscles,
           difficulty: form.difficulty,
           thumbnail_url,
         })
         .eq("id", editTarget.id)
-        .select("id, name_es, name_en, description_es, description_en, muscle_group, difficulty, thumbnail_url, is_global, created_by, created_at")
+        .select("id, name_es, name_en, description_es, description_en, muscle_group, secondary_muscles, stabilizer_muscles, difficulty, thumbnail_url, is_global, created_by, created_at")
         .single();
 
       if (error) throw new Error(error.message);
@@ -265,7 +284,9 @@ export function ExercisesLibrary({
         >
           <option value="all">Todos los niveles</option>
           <option value="beginner">Principiante</option>
+          <option value="beginner_intermediate">Princ.-Intermedio</option>
           <option value="intermediate">Intermedio</option>
+          <option value="intermediate_advanced">Inter.-Avanzado</option>
           <option value="advanced">Avanzado</option>
         </select>
 
@@ -469,6 +490,50 @@ function ExerciseCard({
 }
 
 /* ──────────────────────────────────────────
+   Muscle Multi-Select (Secondary / Stabilizer)
+────────────────────────────────────────── */
+function MuscleMultiSelect({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: MuscleGroup[];
+  onChange: (muscles: MuscleGroup[]) => void;
+}) {
+  const toggle = (muscle: MuscleGroup) => {
+    onChange(
+      value.includes(muscle)
+        ? value.filter((m) => m !== muscle)
+        : [...value, muscle]
+    );
+  };
+
+  return (
+    <div className="space-y-2">
+      <label className="text-label-micro">{label}</label>
+      <div className="flex flex-wrap gap-2">
+        {ALL_MUSCLES.map((m) => (
+          <button
+            key={m}
+            type="button"
+            onClick={() => toggle(m)}
+            className={cn(
+              "px-3 py-1.5 rounded-xl text-xs font-medium transition-all border",
+              value.includes(m)
+                ? "border-[#cafd00]/30 bg-[#cafd00]/10 text-[#cafd00]"
+                : "border-white/10 bg-white/[0.02] text-[#adaaaa] hover:text-white hover:border-white/20"
+            )}
+          >
+            {MUSCLE_LABELS[m]}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ──────────────────────────────────────────
    Exercise Form Modal (Create & Edit)
 ────────────────────────────────────────── */
 function ExerciseFormModal({
@@ -635,10 +700,10 @@ function ExerciseFormModal({
             ))}
           </div>
 
-          {/* Muscle + Difficulty */}
+          {/* Primary Muscle + Difficulty */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="text-label-micro">GRUPO MUSCULAR</label>
+              <label className="text-label-micro">MÚSCULO PRINCIPAL</label>
               <select
                 value={form.muscle_group}
                 onChange={(e) => setForm((p) => ({ ...p, muscle_group: e.target.value as MuscleGroup }))}
@@ -657,11 +722,27 @@ function ExerciseFormModal({
                 className="w-full bg-[#201f1f] border border-white/10 rounded-xl px-4 py-3 text-sm outline-none text-white"
               >
                 <option value="beginner">Principiante</option>
+                <option value="beginner_intermediate">Princ.-Intermedio</option>
                 <option value="intermediate">Intermedio</option>
+                <option value="intermediate_advanced">Inter.-Avanzado</option>
                 <option value="advanced">Avanzado</option>
               </select>
             </div>
           </div>
+
+          {/* Secondary muscles */}
+          <MuscleMultiSelect
+            label="MÚSCULOS SECUNDARIOS"
+            value={form.secondary_muscles}
+            onChange={(muscles) => setForm((p) => ({ ...p, secondary_muscles: muscles }))}
+          />
+
+          {/* Stabilizer muscles */}
+          <MuscleMultiSelect
+            label="MÚSCULOS ESTABILIZADORES"
+            value={form.stabilizer_muscles}
+            onChange={(muscles) => setForm((p) => ({ ...p, stabilizer_muscles: muscles }))}
+          />
 
           {/* Submit */}
           <div className="flex gap-3 pt-2">
@@ -736,9 +817,9 @@ function ExercisePreview({
             </Badge>
           </div>
 
-          <div className="flex items-center gap-2 mb-4">
+          <div className="flex flex-wrap items-center gap-2 mb-2">
             <span className="text-label-micro bg-white/5 px-3 py-1.5 rounded-xl">
-              {MUSCLE_LABELS[ex.muscle_group]}
+              <span className="text-[#adaaaa] mr-1">Principal:</span>{MUSCLE_LABELS[ex.muscle_group]}
             </span>
             {ex.is_global && (
               <span className="text-label-micro bg-[#cafd00]/10 text-[#cafd00] px-3 py-1.5 rounded-xl flex items-center gap-1.5">
@@ -746,6 +827,29 @@ function ExercisePreview({
               </span>
             )}
           </div>
+          {(ex.secondary_muscles?.length > 0) && (
+            <div className="flex flex-wrap items-center gap-2 mb-2">
+              <span className="text-label-micro text-[#adaaaa]">Secundarios:</span>
+              {ex.secondary_muscles.map((m) => (
+                <span key={m} className="text-label-micro bg-[#ece856]/5 text-[#ece856] px-3 py-1 rounded-xl">
+                  {MUSCLE_LABELS[m]}
+                </span>
+              ))}
+            </div>
+          )}
+          {(ex.stabilizer_muscles?.length > 0) && (
+            <div className="flex flex-wrap items-center gap-2 mb-4">
+              <span className="text-label-micro text-[#adaaaa]">Estabilizadores:</span>
+              {ex.stabilizer_muscles.map((m) => (
+                <span key={m} className="text-label-micro bg-white/5 text-[#adaaaa] px-3 py-1 rounded-xl">
+                  {MUSCLE_LABELS[m]}
+                </span>
+              ))}
+            </div>
+          )}
+          {(ex.secondary_muscles?.length === 0 && ex.stabilizer_muscles?.length === 0) && (
+            <div className="mb-4" />
+          )}
 
           {(ex.description_es || ex.description_en) && (
             <div className="surface-high rounded-xl p-4 border border-white/5 mb-5">

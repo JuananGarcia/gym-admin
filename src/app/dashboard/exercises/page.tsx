@@ -8,7 +8,7 @@ export default async function ExercisesPage() {
 
   const { data: exercises } = await supabase
     .from("exercises")
-    .select("id, name_es, name_en, description_es, description_en, muscle_group, difficulty, thumbnail_url, is_global, created_by, created_at")
+    .select("id, name_es, name_en, description_es, description_en, muscle_group, secondary_muscles, stabilizer_muscles, difficulty, thumbnail_url, is_global, created_by, created_at")
     .or(`is_global.eq.true,created_by.eq.${user.id}`)
     .order("created_at", { ascending: false });
 

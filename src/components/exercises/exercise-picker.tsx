@@ -25,9 +25,19 @@ const MUSCLE_LABELS: Record<MuscleGroup, string> = {
 };
 
 const DIFFICULTY_STYLES: Record<DifficultyLevel, string> = {
-  beginner:     "bg-[#cafd00]/10 text-[#cafd00]",
-  intermediate: "bg-[#ece856]/10 text-[#ece856]",
-  advanced:     "bg-[#ff7351]/10 text-[#ff7351]",
+  beginner:              "bg-[#cafd00]/10 text-[#cafd00]",
+  beginner_intermediate: "bg-[#7ddba0]/10 text-[#7ddba0]",
+  intermediate:          "bg-[#ece856]/10 text-[#ece856]",
+  intermediate_advanced: "bg-[#f0a05a]/10 text-[#f0a05a]",
+  advanced:              "bg-[#ff7351]/10 text-[#ff7351]",
+};
+
+const DIFFICULTY_SHORT: Record<DifficultyLevel, string> = {
+  beginner:              "Princ.",
+  beginner_intermediate: "P-Int.",
+  intermediate:          "Inter.",
+  intermediate_advanced: "I-Avz.",
+  advanced:              "Avanz.",
 };
 
 interface PickerProps {
@@ -184,7 +194,7 @@ export function ExercisePicker({ trainerId, selected: initialSelected, onConfirm
                     <div className="flex items-center gap-2 mt-1">
                       <span className="text-label-micro">{MUSCLE_LABELS[ex.muscle_group]}</span>
                       <Badge className={cn("text-label-micro border-0 rounded-full px-2", DIFFICULTY_STYLES[ex.difficulty])}>
-                        {ex.difficulty === "beginner" ? "Princ." : ex.difficulty === "intermediate" ? "Inter." : "Avanz."}
+                        {DIFFICULTY_SHORT[ex.difficulty]}
                       </Badge>
                     </div>
                   </div>
