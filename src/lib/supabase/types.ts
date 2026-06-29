@@ -198,8 +198,8 @@ export interface Database {
           description_es: string | null;
           description_en: string | null;
           muscle_group: MuscleGroup;
-          secondary_muscles: MuscleGroup[];
-          stabilizer_muscles: MuscleGroup[];
+          secondary_muscles: string[];
+          stabilizer_muscles: string[];
           difficulty: DifficultyLevel;
           video_url: string | null;
           thumbnail_url: string | null;
@@ -215,8 +215,8 @@ export interface Database {
           description_es?: string | null;
           description_en?: string | null;
           muscle_group?: MuscleGroup;
-          secondary_muscles?: MuscleGroup[];
-          stabilizer_muscles?: MuscleGroup[];
+          secondary_muscles?: string[];
+          stabilizer_muscles?: string[];
           difficulty?: DifficultyLevel;
           video_url?: string | null;
           thumbnail_url?: string | null;
@@ -232,8 +232,8 @@ export interface Database {
           description_es?: string | null;
           description_en?: string | null;
           muscle_group?: MuscleGroup;
-          secondary_muscles?: MuscleGroup[];
-          stabilizer_muscles?: MuscleGroup[];
+          secondary_muscles?: string[];
+          stabilizer_muscles?: string[];
           difficulty?: DifficultyLevel;
           video_url?: string | null;
           thumbnail_url?: string | null;

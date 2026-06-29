@@ -15,8 +15,8 @@ interface Exercise {
   description_es: string | null;
   description_en: string | null;
   muscle_group: MuscleGroup;
-  secondary_muscles: MuscleGroup[];
-  stabilizer_muscles: MuscleGroup[];
+  secondary_muscles: string[];
+  stabilizer_muscles: string[];
   difficulty: DifficultyLevel;
   thumbnail_url: string | null;
   is_global: boolean;
@@ -28,8 +28,8 @@ type FormState = {
   name_es: string; name_en: string;
   description_es: string; description_en: string;
   muscle_group: MuscleGroup;
-  secondary_muscles: MuscleGroup[];
-  stabilizer_muscles: MuscleGroup[];
+  secondary_muscles: string[];
+  stabilizer_muscles: string[];
   difficulty: DifficultyLevel;
 };
 
@@ -490,45 +490,72 @@ function ExerciseCard({
 }
 
 /* ──────────────────────────────────────────
-   Muscle Multi-Select (Secondary / Stabilizer)
+   Muscle Tag Input (free-text chips)
 ────────────────────────────────────────── */
-function MuscleMultiSelect({
+function MuscleTagInput({
   label,
+  placeholder,
   value,
   onChange,
 }: {
   label: string;
-  value: MuscleGroup[];
-  onChange: (muscles: MuscleGroup[]) => void;
+  placeholder: string;
+  value: string[];
+  onChange: (muscles: string[]) => void;
 }) {
-  const toggle = (muscle: MuscleGroup) => {
-    onChange(
-      value.includes(muscle)
-        ? value.filter((m) => m !== muscle)
-        : [...value, muscle]
-    );
+  const [inputValue, setInputValue] = useState("");
+
+  const addTag = (raw: string) => {
+    const tag = raw.trim().toLowerCase();
+    if (!tag || value.includes(tag)) { setInputValue(""); return; }
+    onChange([...value, tag]);
+    setInputValue("");
+  };
+
+  const removeTag = (tag: string) => onChange(value.filter((t) => t !== tag));
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      addTag(inputValue);
+    } else if (e.key === "Backspace" && !inputValue && value.length > 0) {
+      removeTag(value[value.length - 1]);
+    }
   };
 
   return (
     <div className="space-y-2">
       <label className="text-label-micro">{label}</label>
-      <div className="flex flex-wrap gap-2">
-        {ALL_MUSCLES.map((m) => (
-          <button
-            key={m}
-            type="button"
-            onClick={() => toggle(m)}
-            className={cn(
-              "px-3 py-1.5 rounded-xl text-xs font-medium transition-all border",
-              value.includes(m)
-                ? "border-[#cafd00]/30 bg-[#cafd00]/10 text-[#cafd00]"
-                : "border-white/10 bg-white/[0.02] text-[#adaaaa] hover:text-white hover:border-white/20"
-            )}
+      <div
+        className="input-neon flex flex-wrap items-center gap-2 min-h-[46px] rounded-xl border border-white/10 px-3 py-2 cursor-text transition-all"
+        onClick={(e) => (e.currentTarget.querySelector("input") as HTMLInputElement)?.focus()}
+      >
+        {value.map((tag) => (
+          <span
+            key={tag}
+            className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#cafd00]/10 text-[#cafd00] text-xs font-medium border border-[#cafd00]/20"
           >
-            {MUSCLE_LABELS[m]}
-          </button>
+            {tag}
+            <button
+              type="button"
+              onClick={() => removeTag(tag)}
+              className="hover:text-white transition-colors ml-0.5"
+            >
+              <X size={10} />
+            </button>
+          </span>
         ))}
+        <input
+          type="text"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          onKeyDown={handleKeyDown}
+          onBlur={() => { if (inputValue.trim()) addTag(inputValue); }}
+          placeholder={value.length === 0 ? placeholder : ""}
+          className="flex-1 min-w-[120px] bg-transparent text-sm outline-none placeholder:text-[#494847]"
+        />
       </div>
+      <p className="text-[10px] text-[#494847]">Escribe y pulsa Enter o coma para añadir · Backspace para eliminar el último</p>
     </div>
   );
 }
@@ -731,15 +758,17 @@ function ExerciseFormModal({
           </div>
 
           {/* Secondary muscles */}
-          <MuscleMultiSelect
+          <MuscleTagInput
             label="MÚSCULOS SECUNDARIOS"
+            placeholder="Ej: deltoides anterior, trapecio..."
             value={form.secondary_muscles}
             onChange={(muscles) => setForm((p) => ({ ...p, secondary_muscles: muscles }))}
           />
 
           {/* Stabilizer muscles */}
-          <MuscleMultiSelect
+          <MuscleTagInput
             label="MÚSCULOS ESTABILIZADORES"
+            placeholder="Ej: core, serrato anterior..."
             value={form.stabilizer_muscles}
             onChange={(muscles) => setForm((p) => ({ ...p, stabilizer_muscles: muscles }))}
           />
@@ -831,8 +860,8 @@ function ExercisePreview({
             <div className="flex flex-wrap items-center gap-2 mb-2">
               <span className="text-label-micro text-[#adaaaa]">Secundarios:</span>
               {ex.secondary_muscles.map((m) => (
-                <span key={m} className="text-label-micro bg-[#ece856]/5 text-[#ece856] px-3 py-1 rounded-xl">
-                  {MUSCLE_LABELS[m]}
+                <span key={m} className="text-label-micro bg-[#ece856]/5 text-[#ece856] px-3 py-1 rounded-xl capitalize">
+                  {m}
                 </span>
               ))}
             </div>
@@ -841,8 +870,8 @@ function ExercisePreview({
             <div className="flex flex-wrap items-center gap-2 mb-4">
               <span className="text-label-micro text-[#adaaaa]">Estabilizadores:</span>
               {ex.stabilizer_muscles.map((m) => (
-                <span key={m} className="text-label-micro bg-white/5 text-[#adaaaa] px-3 py-1 rounded-xl">
-                  {MUSCLE_LABELS[m]}
+                <span key={m} className="text-label-micro bg-white/5 text-[#adaaaa] px-3 py-1 rounded-xl capitalize">
+                  {m}
                 </span>
               ))}
             </div>
